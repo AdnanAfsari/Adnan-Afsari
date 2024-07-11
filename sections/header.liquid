@@ -206,7 +206,14 @@
     %}
 
     <p class="ds-none-mobile">Hello</p>
-    <p class="ds-none-mobile">Hello</p>
+    
+    <div class="ds-none-mobile header-button">
+      <a href="" class="button-primary button-yellow">Choose Gift 
+        {%- liquid 
+          render 'arrow-icon'
+        %}
+      </a>
+    </div>
     
 
     {%- if section.settings.logo_position == 'middle-center' -%}
