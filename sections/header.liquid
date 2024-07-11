@@ -205,10 +205,10 @@
       endif
     %}
 
-    <p class="ds-none-mobile">Hello</p>
+    <p class="ds-none-mobile" style="text-align: center;">{{section.settings.navigation-text}}</p>
     
-    <div class="ds-none-mobile header-button">
-      <a href="" class="button-primary button-yellow">Choose Gift 
+    <div class="ds-none-mobile header-button" style="margin-left: auto;">
+      <a href="{{ section.settings.nav-button_link }}" class="button-primary button-yellow">{{section.settings.nav-button-title}}
         {%- liquid 
           render 'arrow-icon'
         %}
@@ -513,6 +513,27 @@
       "default": "middle-left",
       "label": "t:sections.header.settings.logo_position.label",
       "info": "t:sections.header.settings.logo_help.content"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Content for the Test"
+    },
+    {
+      "type": "text",
+      "id": "navigation-text",
+      "label": "Navigation Text",
+      "default": "Find the ideal gift for your loved ones."
+    },
+    {
+      "type": "text",
+      "id": "nav-button-title",
+      "label": "Navigation Button Title",
+      "default": "Choose Gift"
+    },
+    {
+      "type": "url",
+      "id": "nav-button_link",
+      "label": "Navigation Button link"
     },
     {
       "type": "link_list",
