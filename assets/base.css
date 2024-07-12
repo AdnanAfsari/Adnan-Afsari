@@ -3795,3 +3795,29 @@ details-disclosure > details {
   color: white !important;
 }
 /* Yellow button ends*/
+
+/* Black button */
+.button-black {
+  background: black;
+  color: white;
+}
+
+.button-black svg path {
+  fill: white;
+}
+
+.button-black:hover svg path {
+  fill: black !important;
+}
+
+.button-black:before {
+  background: #FFF544;;
+}
+
+.button-black:hover,
+.button-black:focus,
+.button-black:active {
+  color: black !important;
+}
+
+/* Black button ends*/
