@@ -39,11 +39,6 @@
     position: absolute;
     width: 22px !important;
     height: 22px !important;
-    /* display: flex;
-    align-items: center;
-    border-radius: 100%;
-    justify-content: center;
-    line-height: 30px; */
     z-index: 1;
   }
 
@@ -56,20 +51,19 @@
 {%- endstyle -%}
 
 <div class="page-width">
-  <h2>{{ section.settings.title }}</h2>
-
   <div class="grid-container">
     {%- for block in section.blocks -%}
       {%- liquid
         assign product = block.settings.product
-
-        assign random_number = 'now' | date: '%N' | modulo: 90
+        assign min = 5
+        assign max = 80
+        assign diff = max | minus: min
+        assign random_number = 'now' | date: '%N' | modulo: diff | plus: min
       -%}
       {%- case block.type -%}
         {%- when 'product' -%}
           <div class="product-grid">
             {%- if product != blank -%}
-              {{ product }}
               <img
                 srcset="{{ product.featured_media | image_url }} {{ product.featured_media.width }}w"
                 src="{{ product.featured_media | image_url: width: 533 }}"

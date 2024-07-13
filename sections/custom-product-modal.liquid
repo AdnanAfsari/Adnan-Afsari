@@ -84,14 +84,6 @@
   }
 </style>
 
-<script>
-  var xhReq = new XMLHttpRequest();
-  xhReq.open('GET', 'https://adnan-afsari-test.myshopify.com/products/blue-silk-tuxedo.json', false);
-  xhReq.send(null);
-  var jsonObject = JSON.parse(xhReq.responseText);
-  var product = jsonObject['product'];
-</script>
-
 <div
   class="section-id"
   id="modal-section"
@@ -113,26 +105,26 @@
 
         <div>
           {% if product.variants.size > 1 %}
-            {% if product.options[0] %}
-              {% assign used = '' %}
-              <label for="select-one">{{ product.options[0] }}</label>
-              <select id="select-one" onchange="letsDoThis()">
-                {% for variant in product.variants %}
-                  {% unless used contains variant.option1 %}
-                    <option value="{{ variant.option1 }}">{{ variant.option1 }}</option>
-                    {% capture used %}{{ used }} {{ variant.option1 }}{% endcapture %}
-                  {% endunless %}
-                {% endfor %}
-              </select>
-            {% endif %}
             {% if product.options[1] %}
               {% assign used = '' %}
               <label for="select-one">{{ product.options[1] }}</label>
-              <select id="select-two" onchange="letsDoThis()">
+              <select id="select-one" onchange="letsDoThis()">
                 {% for variant in product.variants %}
                   {% unless used contains variant.option2 %}
                     <option value="{{ variant.option2 }}">{{ variant.option2 }}</option>
                     {% capture used %}{{ used }} {{ variant.option2 }}{% endcapture %}
+                  {% endunless %}
+                {% endfor %}
+              </select>
+            {% endif %}
+            {% if product.options[0] %}
+              {% assign used = '' %}
+              <label for="select-one">{{ product.options[0] }}</label>
+              <select id="select-two" onchange="letsDoThis()">
+                {% for variant in product.variants %}
+                  {% unless used contains variant.option1 %}
+                    <option value="{{ variant.option1 }}">{{ variant.option1 }}</option>
+                    {% capture used %}{{ used }} {{ variant.option1 }}{% endcapture %}
                   {% endunless %}
                 {% endfor %}
               </select>
@@ -170,10 +162,7 @@
   </div>
 </div>
 <script>
-
-    {% comment %} let product = `https://adnan-afsari-test.myshopify.com/products/blue-silk-tuxedo`;
-    console.log(product) {% endcomment %}
-
+  var product = product;
   window.addEventListener('load', (event) => {
     async function openModal(html, shouldShow) {
       const modalHTML = html;
@@ -185,7 +174,6 @@
       // Get references to the modal and close button
       const modal = document.getElementById('custom-modal');
       const closeButton = document.getElementsByClassName('custom-close-modal')[0];
-
       let tempy = document.querySelector('#modal-section');
       tempy.style.display = 'block';
 
@@ -202,7 +190,6 @@
       closeButton.addEventListener('click', closeModal);
 
       // Event listener to close the modal when clicking outside of it
-
       window.addEventListener('click', function (event) {
         if (event.target == modal || event.target == closeButton) {
           closeModal();
@@ -213,11 +200,16 @@
     document.addEventListener('click', async function (event) {
       if (event.target.matches('.modal-selector-quick-view')) {
         const targetData = event.target.dataset.target;
-        
         let response = await fetch(`/products/${targetData}?section_id={{ section.id }}`);
         let productMarkup = await response.text();
         openModal(productMarkup, true);
 
+        let url = `https://${window.location.host}/products/${targetData}.json`;
+        var xhReq = new XMLHttpRequest();
+        xhReq.open('GET', url, false);
+        xhReq.send(null);
+        var jsonObject = JSON.parse(xhReq.responseText);
+        product = jsonObject['product'];
       } else if (event.target.matches('#addToCartButton')) {
         const id = document.querySelector('#get_product_id').value;
         let formData = {
@@ -228,6 +220,7 @@
             },
           ],
         };
+
         fetch(window.Shopify.routes.root + 'cart/add.js', {
           method: 'POST',
           headers: {
@@ -244,51 +237,33 @@
           });
       }
     });
-
-    
-   
   });
 
-  {% comment %} const product = "https://adnan-afsari-test.myshopify.com/products/blue-silk-tuxedo.json" {% endcomment %}
-
-  {% comment %} const product = fetch('https://adnan-afsari-test.myshopify.com/products/blue-silk-tuxedo.json')
-	.then(response => response.json())
-	.then(data => console.log(data))
-	.catch(err => console.error(err)); {% endcomment %}
-
   function letsDoThis() {
-		if (product.options[0]) {var opt1 = document.getElementById('select-one').value;}
-		if (product.options[1]) {var opt2 = document.getElementById('select-two').value;}
-		if (product.options[2]) {var opt3 = document.getElementById('select-three').value;}
-		
-         
-        var id = '';
-		for (const v in product.variants) { 
-            console.log(v.id);
+    if (product.options[0]) {
+      var opt1 = document.getElementById('select-one').value;
+    }
+    if (product.options[1]) {
+      var opt2 = document.getElementById('select-two').value;
+    }
+    if (product.options[2]) {
+      var opt3 = document.getElementById('select-three').value;
+    }
+    var id = '';
+    for (const key in product.variants) {
+      let v = product.variants[key];
+      const conditionsArray = [
+        opt1 == v.option1,
+        product.options[1] && opt2 == v.option2,
+        product.options[2] && opt3 == v.option3,
+      ];
+      if (conditionsArray.indexOf(false) === -1) {
+        id = v.id;
+      }
+    }
 
-            if(opt1== v.option1 ) {
-                 if (product.options[1]) && (opt2== v.option2) {
-
-                    if (product.options[2] && opt3== v.option3) {
-                        var id =  v.id;
-                        {% comment %} var price = "{{ v.price | money }}"; {% endcomment %}
-                    }
-
-                    
-                }
-            }
-		}
-        console.log(id); 
-
-		{% comment %} if(id!='') {
-			document.getElementById('product-select').value = id;
-			document.getElementById('price').innerHTML = price;
-		} else {
-			document.getElementById('product-select').value = '';
-			document.getElementById('price').innerHTML = 'Unavailable';
-		} {% endcomment %}
-		
-	}
+    document.getElementById('get_product_id').value = id;
+  }
 </script>
 
 {% schema %}
