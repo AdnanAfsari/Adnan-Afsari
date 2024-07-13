@@ -18,14 +18,14 @@
     justify-content: center;
   }
 
-  .product-grid {
+  .grid_test_section .product-grid {
     width: calc(50% - 13.5px);
     max-width: calc(33.333% - 13.5px);
     aspect-ratio: 0.975;
     position: relative;
   }
 
-  .product-grid img {
+  .grid_test_section .product-grid img {
     object-fit: cover;
     object-position: center center;
     transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -37,17 +37,18 @@
 
   .modal-selector-quick-view {
     position: absolute;
-    width: 30px;
-    height: 30px;
-    display: flex;
+    width: 22px !important;
+    height: 22px !important;
+    /* display: flex;
     align-items: center;
     border-radius: 100%;
     justify-content: center;
-    line-height: 30px;
+    line-height: 30px; */
+    z-index: 1;
   }
 
   @media screen and (max-width: 749px) {
-    .product-grid {
+    .grid_test_section .product-grid {
       width: calc(50% - 13.5px);
       max-width: calc(50% - 13.5px);
     }
@@ -61,31 +62,34 @@
     {%- for block in section.blocks -%}
       {%- liquid
         assign product = block.settings.product
+
         assign random_number = 'now' | date: '%N' | modulo: 90
       -%}
       {%- case block.type -%}
         {%- when 'product' -%}
           <div class="product-grid">
-            <img
-              srcset="{{ product.featured_media | image_url }} {{ product.featured_media.width }}w"
-              src="{{ product.featured_media | image_url: width: 533 }}"
+            {%- if product != blank -%}
+              {{ product }}
+              <img
+                srcset="{{ product.featured_media | image_url }} {{ product.featured_media.width }}w"
+                src="{{ product.featured_media | image_url: width: 533 }}"
 
-              alt="{{ product.featured_media.alt | escape }}"
-              class="motion-reduce"
-              loading="lazy"
-              width="{{ product.featured_media.width }}"
-              height="{{ product.featured_media.height }}"
-            >
+                alt="{{ product.featured_media.alt | escape }}"
+                class="motion-reduce"
+                loading="lazy"
+                width="{{ product.featured_media.width }}"
+                height="{{ product.featured_media.height }}"
+              >
 
-            <button
-              style="z-index: 99; cursor: pointer; top: {{ random_number }}%; right:{{ random_number }}%"
-              data-target="{{ product.handle}}"
-              class="modal-selector-quick-view"
-            >
-              {%- liquid
-                render 'plus-icon'
-              -%}
-            </button>
+              <img
+                style="cursor: pointer; top: {{ random_number }}%; right:{{ random_number }}%"
+                data-target="{{ product.handle}}"
+                class="modal-selector-quick-view"
+                src="https://cdn.shopify.com/s/files/1/0712/2626/1722/files/plus-icon.png?v=1720836364"
+                width="22px"
+                height="22px"
+              >
+            {%- endif -%}
           </div>
       {%- endcase -%}
     {%- endfor -%}

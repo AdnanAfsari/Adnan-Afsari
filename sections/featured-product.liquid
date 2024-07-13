@@ -44,6 +44,7 @@
 
 <form action="/cart/add" method="post">
   {% if product.variants.size > 1 %}
+    {{ product }}
 		{% if product.options[0] %}
 			{% assign used = '' %}
 			<label for="select-one">{{ product.options[0] }}</label>
@@ -85,7 +86,7 @@
 </form>
 
 
-<script>
+{% comment %} <script>
 	function letsDoThis() {
 		{% if product.options[0] %}var opt1 = document.getElementById('select-one').value;{% endif %}
 		{% if product.options[1] %}var opt2 = document.getElementById('select-two').value;{% endif %}
@@ -107,7 +108,7 @@
 		}
 		  
 	}
-</script>
+</script> {% endcomment %}
 
 <form action="/cart/add" method="post">
   <input type="hidden" name="id" id="product-fuck" value="{{45500939075802}}" />

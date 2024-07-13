@@ -1,0 +1,317 @@
+<style>
+  /* Modal Styles */
+  #custom-modal {
+    /* position: fixed; */
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Modal Content Styles */
+  .custom-modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    min-width: 450px;
+    max-width: 600px;
+    display: flex;
+    border-radius: 4px;
+  }
+
+  /* Close Button Styles */
+  .custom-close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .custom-close-modal:hover,
+  .custom-close-modal:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .shopify-section-template--21946272514334__image_banner {
+    display: none;
+  }
+
+  /* flex stuff */
+  .modal-left {
+    flex: 1;
+  }
+
+  .modal-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .sneaky-submit {
+    height: 40px;
+    width: 110px;
+  }
+
+  .modal-rt {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  #addToCartButton {
+    background-color: rgba(var(--color-button), var(--alpha-button-background));
+    appearance: none;
+    border: 0;
+    justify-content: center;
+    align-items: center;
+    padding: 0 3rem;
+    font: inherit;
+    text-decoration: none;
+    color: rgb(var(--color-button-text));
+    border-radius: 4px;
+    cursor: pointer;
+  }
+</style>
+
+<script>
+  var xhReq = new XMLHttpRequest();
+  xhReq.open('GET', 'https://adnan-afsari-test.myshopify.com/products/blue-silk-tuxedo.json', false);
+  xhReq.send(null);
+  var jsonObject = JSON.parse(xhReq.responseText);
+  var product = jsonObject['product'];
+</script>
+
+<div
+  class="section-id"
+  id="modal-section"
+  data-section="{{ section.id }}"
+  style="display: none;"
+>
+  <div id="custom-modal" class="custom-modal">
+    <div class="custom-modal-content">
+      <div class="modal-left">
+        <h2>{{ product.title }}</h2>
+        {{ product.featured_image | image_url: width: 300 | image_tag }}
+      </div>
+
+      <div class="modal-right">
+        <div class="modal-rt">
+          <p>{{ product.description }}</p>
+          <p>{{ product.price | money }}</p>
+        </div>
+
+        <div>
+          {% if product.variants.size > 1 %}
+            {% if product.options[0] %}
+              {% assign used = '' %}
+              <label for="select-one">{{ product.options[0] }}</label>
+              <select id="select-one" onchange="letsDoThis()">
+                {% for variant in product.variants %}
+                  {% unless used contains variant.option1 %}
+                    <option value="{{ variant.option1 }}">{{ variant.option1 }}</option>
+                    {% capture used %}{{ used }} {{ variant.option1 }}{% endcapture %}
+                  {% endunless %}
+                {% endfor %}
+              </select>
+            {% endif %}
+            {% if product.options[1] %}
+              {% assign used = '' %}
+              <label for="select-one">{{ product.options[1] }}</label>
+              <select id="select-two" onchange="letsDoThis()">
+                {% for variant in product.variants %}
+                  {% unless used contains variant.option2 %}
+                    <option value="{{ variant.option2 }}">{{ variant.option2 }}</option>
+                    {% capture used %}{{ used }} {{ variant.option2 }}{% endcapture %}
+                  {% endunless %}
+                {% endfor %}
+              </select>
+            {% endif %}
+            {% if product.options[2] %}
+              {% assign used = '' %}
+              <label for="select-one">{{ product.options[2] }}</label>
+              <select id="select-three" onchange="letsDoThis()">
+                {% for variant in product.variants %}
+                  {% unless used contains variant.option3 %}
+                    <option value="{{ variant.option3 }}">{{ variant.option3 }}</option>
+                    {% capture used %}{{ used }} {{ variant.option3 }}{% endcapture %}
+                  {% endunless %}
+                {% endfor %}
+              </select>
+            {% endif %}
+          {% endif %}
+          <input type="hidden" name="id" id="product-select" value="{{ product.variants.first.id }}">
+        </div>
+
+        <div class="modal-rb">
+          <input
+            type="hidden"
+            name="id"
+            id="get_product_id"
+            value="{{ product.variants.first.id }}"
+          >
+          <button id="addToCartButton">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- custom-close-modal Button -->
+      <span class="custom-close-modal">&times;</span>
+    </div>
+  </div>
+</div>
+<script>
+
+    {% comment %} let product = `https://adnan-afsari-test.myshopify.com/products/blue-silk-tuxedo`;
+    console.log(product) {% endcomment %}
+
+  window.addEventListener('load', (event) => {
+    async function openModal(html, shouldShow) {
+      const modalHTML = html;
+      if (shouldShow) {
+        const replacingHTML = await document.querySelector('#modal-section');
+        replacingHTML.outerHTML = html;
+      }
+
+      // Get references to the modal and close button
+      const modal = document.getElementById('custom-modal');
+      const closeButton = document.getElementsByClassName('custom-close-modal')[0];
+
+      let tempy = document.querySelector('#modal-section');
+      tempy.style.display = 'block';
+
+      //   modal.style.display = "block";
+      document.getElementById('custom-modal').style.position = 'fixed';
+
+      // Function to close the modal
+      function closeModal() {
+        modal.style.display = 'none';
+        modal.style.position = 'static';
+      }
+
+      // Event listener for the close button
+      closeButton.addEventListener('click', closeModal);
+
+      // Event listener to close the modal when clicking outside of it
+
+      window.addEventListener('click', function (event) {
+        if (event.target == modal || event.target == closeButton) {
+          closeModal();
+        }
+      });
+    }
+
+    document.addEventListener('click', async function (event) {
+      if (event.target.matches('.modal-selector-quick-view')) {
+        const targetData = event.target.dataset.target;
+        
+        let response = await fetch(`/products/${targetData}?section_id={{ section.id }}`);
+        let productMarkup = await response.text();
+        openModal(productMarkup, true);
+
+      } else if (event.target.matches('#addToCartButton')) {
+        const id = document.querySelector('#get_product_id').value;
+        let formData = {
+          items: [
+            {
+              id: id,
+              quantity: 1,
+            },
+          ],
+        };
+        fetch(window.Shopify.routes.root + 'cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        })
+          .then((response) => {
+            window.location.href = '/cart';
+            return response.json();
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+      }
+    });
+
+    
+   
+  });
+
+  {% comment %} const product = "https://adnan-afsari-test.myshopify.com/products/blue-silk-tuxedo.json" {% endcomment %}
+
+  {% comment %} const product = fetch('https://adnan-afsari-test.myshopify.com/products/blue-silk-tuxedo.json')
+	.then(response => response.json())
+	.then(data => console.log(data))
+	.catch(err => console.error(err)); {% endcomment %}
+
+  function letsDoThis() {
+		if (product.options[0]) {var opt1 = document.getElementById('select-one').value;}
+		if (product.options[1]) {var opt2 = document.getElementById('select-two').value;}
+		if (product.options[2]) {var opt3 = document.getElementById('select-three').value;}
+		
+         
+        var id = '';
+		for (const v in product.variants) { 
+            console.log(v.id);
+
+            if(opt1== v.option1 ) {
+                 if (product.options[1]) && (opt2== v.option2) {
+
+                    if (product.options[2] && opt3== v.option3) {
+                        var id =  v.id;
+                        {% comment %} var price = "{{ v.price | money }}"; {% endcomment %}
+                    }
+
+                    
+                }
+            }
+		}
+        console.log(id); 
+
+		{% comment %} if(id!='') {
+			document.getElementById('product-select').value = id;
+			document.getElementById('price').innerHTML = price;
+		} else {
+			document.getElementById('product-select').value = '';
+			document.getElementById('price').innerHTML = 'Unavailable';
+		} {% endcomment %}
+		
+	}
+</script>
+
+{% schema %}
+{
+  "name": "Quick View Modal",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "title",
+      "label": "Text"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Quick View Modal",
+      "settings": {
+        "title": "Quick View Modal"
+      }
+    }
+  ],
+  "enabled_on": {
+    "templates": ["*"]
+  }
+}
+{% endschema %}
