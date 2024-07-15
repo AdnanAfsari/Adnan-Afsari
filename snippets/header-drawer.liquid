@@ -19,6 +19,23 @@
     <div id="menu-drawer" class="gradient menu-drawer motion-reduce color-{{ section.settings.menu_color_scheme }}">
       <div class="menu-drawer__inner-container">
         <div class="menu-drawer__navigation-container">
+          {% comment %} New Content added here  {% endcomment %}
+          <div>
+            <p class="" style="text-align: center;">{{ section.settings.navigation_text }}</p>
+            <div class="header-button">
+              <a
+                href="{{ section.settings.nav_button_link }}"
+                class="button-primary button-yellow"
+                style="margin:0 auto;"
+              >
+                {{ section.settings.nav_button_title }}
+                {%- liquid
+                  render 'arrow-icon'
+                %}
+              </a>
+            </div>
+          </div>
+
           <nav class="menu-drawer__navigation">
             <ul class="menu-drawer__menu has-submenu list-menu" role="list">
               {%- for link in section.settings.menu.links -%}
