@@ -1,7 +1,24 @@
 <style>
-  /* Modal Styles */
+  input {
+    all: unset;
+  }
+  #select-one {
+    border-radius: 0;
+    width: 100%;
+    padding: 11px;
+    text-align: center;
+    border-color: black;
+  }
+
+  #select-one:active,
+  #select-one:focus,
+  #select-one:hover {
+    border-radius: 0;
+    outline: none;
+    {% comment %} border: none; {% endcomment %}
+     box-shadow: none;
+  }
   #custom-modal {
-    /* position: fixed; */
     z-index: 1;
     left: 0;
     top: 0;
@@ -11,25 +28,157 @@
     background-color: rgba(0, 0, 0, 0.5);
   }
 
-  /* Modal Content Styles */
   .custom-modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 50%;
-    min-width: 450px;
-    max-width: 600px;
-    display: flex;
-    border-radius: 4px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 36px 17px 17px 17px;
+    width: 90%;
+    max-height: 447px;
+    max-width: 311px;
+    font-size: 14px;
   }
 
-  /* Close Button Styles */
+  .modal-content-header {
+    display: flex;
+    gap: 8px;
+  }
+
+  .modal-right {
+    flex: 1;
+  }
+  .modal-right h2 {
+    font-size: 16px;
+    font-weight: 300;
+    margin-top: 11px;
+  }
+
+  .modal-right .money {
+    margin-top: -5px;
+  }
+
+  .modal-right p {
+    font-size: 14px;
+    font-weight: 200;
+    margin: 0;
+    margin-top: 10px;
+    letter-spacing: -0.6px;
+    line-height: 1.1;
+
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    line-clamp: 5;
+    -webkit-box-orient: vertical;
+  }
+
+  .modal-left {
+    width: 120px;
+  }
+
+  .modal-left img {
+    width: 120px;
+    height: 140px;
+  }
+
+  .color-varient-container {
+    display: flex;
+  }
+
+  .color-varient-btn {
+    flex: 1;
+    border: 1px solid black;
+    height: 40px;
+    position: relative;
+    color: black;
+  }
+
+  .color-varient-btn::before {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 0px;
+    height: 100%;
+    width: 6px;
+    background: var(--bubble-color);
+    z-index: 99;
+    border-right: 1px solid black;
+  }
+
+  .color-varient-btn .checkmark {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+    transition: color 0.3s linear 0.05s;
+  }
+
+  .switch-input-varient:checked ~ .checkmark {
+    color: white;
+    z-index: 999;
+  }
+
+  .switch-input-varient {
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+    padding: 0 !important;
+    margin: 0 !important;
+    z-index: 9;
+    position: relative;
+
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-transition-property: color;
+    transition-property: color;
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+  }
+
+  .switch-input-varient::before {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: transparent;
+    z-index: 0;
+    z-index: -1;
+    right: 0;
+    bottom: 0;
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    -webkit-transform-origin: 0 50%;
+    transform-origin: 0 50%;
+    -webkit-transition-property: transform;
+    transition-property: transform;
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+  }
+
+  .switch-input-varient:checked:before {
+    background: black;
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+  }
+
   .custom-close-modal {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
+
+    position: absolute;
+    right: 12px;
+    top: -4px;
   }
 
   .custom-close-modal:hover,
@@ -41,32 +190,6 @@
 
   .shopify-section-template--21946272514334__image_banner {
     display: none;
-  }
-
-  /* flex stuff */
-  .modal-left {
-    flex: 1;
-  }
-
-  .modal-right {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-
-  .sneaky-submit {
-    height: 40px;
-    width: 110px;
-  }
-
-  .modal-rt {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
   }
 
   #addToCartButton {
@@ -92,35 +215,54 @@
 >
   <div id="custom-modal" class="custom-modal">
     <div class="custom-modal-content">
-      <div class="modal-left">
-        <h2>{{ product.title }}</h2>
-        {{ product.featured_image | image_url: width: 300 | image_tag }}
-      </div>
+      <span class="custom-close-modal">&times;</span>
 
-      <div class="modal-right">
-        <div class="modal-rt">
-          <p>{{ product.description }}</p>
-          <p>{{ product.price | money }}</p>
+      <div class="modal-content-header">
+        <!-- custom-close-modal Button -->
+
+        <div class="modal-left">
+          {{ product.featured_image | image_url: width: 300 | image_tag }}
         </div>
 
-        <div>
-          {% if product.variants.size > 1 %}
-            {% if product.options[1] %}
-              {% assign used = '' %}
-              <label for="select-one">{{ product.options[1] }}</label>
+        <div class="modal-right">
+          <h2>{{ product.title }}</h2>
+          <p class="money">{{ product.price | money }}</p>
+          <div class="modal-rt">
+            <p>{{ product.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-content-bottom">
+        {% if product.variants.size > 1 %}
+          {% if product.options[1] %}
+            {% assign used = '' %}
+            <label for="select-two">{{ product.options[1] }}</label>
+            <div class="color-varient-container">
+              {% for variant in product.variants %}
+                {% unless used contains variant.option2 %}
+                  <div class="color-varient-btn" style="--bubble-color: {{variant.option2 | downcase}};">
+                    <input
+                      onchange="letsDoThis()"
+                      id="select-two"
+                      value="{{ variant.option2 }}"
+                      type="radio"
+                      class="switch-input-varient"
+                      name="switch-toggle"
+                    >
+                    <span class="checkmark">{{ variant.option2 }}</span>
+                  </div>
+                  {% capture used %}{{ used }} {{ variant.option2 }}{% endcapture %}
+                {% endunless %}
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% if product.options[0] %}
+            {% assign used = '' %}
+            <label for="select-one">{{ product.options[0] }}</label>
+            <div class="custom-select">
               <select id="select-one" onchange="letsDoThis()">
-                {% for variant in product.variants %}
-                  {% unless used contains variant.option2 %}
-                    <option value="{{ variant.option2 }}">{{ variant.option2 }}</option>
-                    {% capture used %}{{ used }} {{ variant.option2 }}{% endcapture %}
-                  {% endunless %}
-                {% endfor %}
-              </select>
-            {% endif %}
-            {% if product.options[0] %}
-              {% assign used = '' %}
-              <label for="select-one">{{ product.options[0] }}</label>
-              <select id="select-two" onchange="letsDoThis()">
+                <option value="" selected disabled hidden>Choose your size</option>
                 {% for variant in product.variants %}
                   {% unless used contains variant.option1 %}
                     <option value="{{ variant.option1 }}">{{ variant.option1 }}</option>
@@ -128,41 +270,41 @@
                   {% endunless %}
                 {% endfor %}
               </select>
-            {% endif %}
-            {% if product.options[2] %}
-              {% assign used = '' %}
-              <label for="select-one">{{ product.options[2] }}</label>
-              <select id="select-three" onchange="letsDoThis()">
-                {% for variant in product.variants %}
-                  {% unless used contains variant.option3 %}
-                    <option value="{{ variant.option3 }}">{{ variant.option3 }}</option>
-                    {% capture used %}{{ used }} {{ variant.option3 }}{% endcapture %}
-                  {% endunless %}
-                {% endfor %}
-              </select>
-            {% endif %}
+            </div>
           {% endif %}
-          <input type="hidden" name="id" id="product-select" value="{{ product.variants.first.id }}">
-        </div>
 
-        <div class="modal-rb">
-          <input
-            type="hidden"
-            name="id"
-            id="get_product_id"
-            value="{{ product.variants.first.id }}"
-          >
-          <button id="addToCartButton">Add to Cart</button>
-        </div>
+          {% if product.options[2] %}
+            {% assign used = '' %}
+            <label for="select-one">{{ product.options[2] }}</label>
+            <select id="select-three" onchange="letsDoThis()">
+              {% for variant in product.variants %}
+                {% unless used contains variant.option3 %}
+                  <option value="{{ variant.option3 }}">{{ variant.option3 }}</option>
+                  {% capture used %}{{ used }} {{ variant.option3 }}{% endcapture %}
+                {% endunless %}
+              {% endfor %}
+            </select>
+          {% endif %}
+        {% endif %}
+        <input type="hidden" name="id" id="product-select" value="{{ product.variants.first.id }}">
       </div>
 
-      <!-- custom-close-modal Button -->
-      <span class="custom-close-modal">&times;</span>
+      <div class="modal-rb">
+        <input
+          type="hidden"
+          name="id"
+          id="get_product_id"
+          value="{{ product.variants.first.id }}"
+        >
+        <button id="addToCartButton">Add to Cart</button>
+      </div>
     </div>
   </div>
 </div>
+
 <script>
   var product = product;
+
   window.addEventListener('load', (event) => {
     async function openModal(html, shouldShow) {
       const modalHTML = html;
@@ -229,7 +371,7 @@
           body: JSON.stringify(formData),
         })
           .then((response) => {
-            window.location.href = '/cart';
+            {% comment %} window.location.href = '/cart'; {% endcomment %}
             return response.json();
           })
           .catch((error) => {
@@ -244,24 +386,30 @@
       var opt1 = document.getElementById('select-one').value;
     }
     if (product.options[1]) {
-      var opt2 = document.getElementById('select-two').value;
+      var colorVarients = document.querySelectorAll('.switch-input-varient');
+      var opt2 = colorVarients[0].value;
+      colorVarients.forEach(function (opt) {
+        if (opt.checked) {
+          opt2 = opt.value;
+        }
+      });
     }
-    if (product.options[2]) {
-      var opt3 = document.getElementById('select-three').value;
-    }
-    var id = '';
+
+    let id = '';
+
     for (const key in product.variants) {
       let v = product.variants[key];
-      const conditionsArray = [
+
+      let conditionsArray = [
         opt1 == v.option1,
         product.options[1] && opt2 == v.option2,
         product.options[2] && opt3 == v.option3,
       ];
+
       if (conditionsArray.indexOf(false) === -1) {
         id = v.id;
       }
     }
-
     document.getElementById('get_product_id').value = id;
   }
 </script>
