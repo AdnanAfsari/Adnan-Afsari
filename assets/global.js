@@ -6,6 +6,42 @@ function getFocusableElements(container) {
   );
 }
 
+async function checkInCart() {
+  let response = await fetch(`https://${window.location.host}/cart.js`);
+  let data = await response.json();
+  let cartItems = data.items;
+
+  cartItems.forEach(function (opt) {
+    if (opt.variant_title === 'M / Black'){
+        let formData = {
+          items: [
+            {
+              id: 45500939239642,
+              quantity: 1,
+            },
+          ],
+        };
+
+        fetch(window.Shopify.routes.root + 'cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        })
+        .then((response) => {
+          // window.location.href = '/cart';
+          return response.json();
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+  });
+  
+
+}
+
 class SectionId {
   static #separator = '__';
 
