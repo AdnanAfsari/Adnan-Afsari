@@ -371,7 +371,7 @@
           body: JSON.stringify(formData),
         })
           .then((response) => {
-            {% comment %} window.location.href = '/cart'; {% endcomment %}
+            window.location.href = '/cart';
             return response.json();
           })
           .catch((error) => {
