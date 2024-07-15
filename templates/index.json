@@ -12,11 +12,13 @@
     "banner_test_7AgAFJ": {
       "type": "banner-test",
       "settings": {
+        "bg_image": "shopify:\/\/shop_images\/Group_1000007949.png",
+        "bg_image_mobile": "shopify:\/\/shop_images\/Frame_1958.png",
         "heading": "The Gift Guide",
-        "sub_heading": "",
+        "sub_heading": "<p>Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.<\/p>",
         "btn_title": "Shop Now",
         "btn_link": "",
-        "banner_footer_text": ""
+        "banner_footer_text": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
       }
     },
     "grid_test_section_fq3eyc": {
